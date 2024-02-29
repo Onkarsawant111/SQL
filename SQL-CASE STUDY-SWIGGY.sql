@@ -185,6 +185,16 @@ select user_id, name from users where user_id not in (select user_id from orders
 select food_items.f_id, food_items.f_name, avg(price) from menu inner join food_items on food_items.f_id = menu.f_id group by menu.f_id ;
 select f.f_id, f.f_name, avg(price) from menu as m inner join food_items as f on f.f_id = m.f_id group by m.f_id ;
 -- 3) Find top restaurant in terms of no of orders for a given month?
+select r.r_name, r.r_id, count(r.r_id) as total_orders from orders as o inner join restaurants as r on r.r_id = o.r_id where date>='2022-07-01' and date<='2022-07-31'
+group by r_id order by total_orders desc limit 1;
+-- 4) find restaurants with monthly sales > 500 rs
+select r.r_name, r.r_id, sum(amount) as monthly_income from orders as o inner join restaurants as r on r.r_id = o.r_id 
+where date>='2022-06-01' and date<='2022-06-30' 
+group by r.r_id having sum(amount)>500 order by monthly_income desc;
+-- 5) show all orders with order details for a particular customer in a particular date range 
+select u.name, o.user_id, o.date, f.f_name, r.r_name, o.amount from orders as o inner join users as u on o.user_id = u.user_id 
+inner join order_details as od on o.order_id = od.order_id inner join food_items as f on od.f_id = f.f_id inner join restaurants as r on r.r_id = o.r_id
+where o.user_id <= 1 and date>='2022-05-01' and date<='2022-07-30';
 
 
 
